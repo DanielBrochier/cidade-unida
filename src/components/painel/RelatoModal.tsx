@@ -8,12 +8,13 @@ import { COR_STATUS } from "@/lib/cor-status";
 import StatusBadge from "@/components/painel/StatusBadge";
 import MiniMapaLocalClient from "@/components/painel/MiniMapaLocalClient";
 
-const STATUS_OPCOES: StatusRelato[] = ["aberto", "em_andamento", "resolvido"];
+const STATUS_OPCOES: StatusRelato[] = ["aberto", "em_andamento", "resolvido", "descartado"];
 
 const CLASSE_BOTAO: Record<StatusRelato, string> = {
   aberto: "border-accent bg-accent-soft text-accent",
   em_andamento: "border-amber bg-amber-soft text-amber",
   resolvido: "border-moss bg-moss-soft text-moss",
+  descartado: "border-line bg-line text-ink-soft",
 };
 
 export default function RelatoModal({

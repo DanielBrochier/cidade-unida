@@ -37,7 +37,7 @@ create table if not exists public.relatos (
   latitude double precision not null,
   longitude double precision not null,
   status text not null default 'aberto' check (
-    status in ('aberto', 'em_andamento', 'resolvido')
+    status in ('aberto', 'em_andamento', 'resolvido', 'descartado')
   )
 );
 create index if not exists relatos_cidade_id_idx on public.relatos (cidade_id);

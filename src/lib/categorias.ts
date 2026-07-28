@@ -29,12 +29,13 @@ export function labelCategoria(id: string): string {
   return CATEGORIAS.find((c) => c.id === id)?.label ?? id;
 }
 
-export type StatusRelato = "aberto" | "em_andamento" | "resolvido";
+export type StatusRelato = "aberto" | "em_andamento" | "resolvido" | "descartado";
 
 export const STATUS_LABEL: Record<StatusRelato, string> = {
   aberto: "Aberto",
   em_andamento: "Em andamento",
   resolvido: "Resolvido",
+  descartado: "Descartado",
 };
 
 export type Relato = {

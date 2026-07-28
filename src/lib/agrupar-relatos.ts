@@ -49,12 +49,14 @@ export function agruparRelatos(relatos: Relato[]): GrupoRelatos[] {
   }));
 }
 
-const PRIORIDADE_STATUS: StatusRelato[] = ["aberto", "em_andamento", "resolvido"];
+// "descartado" fica por último de propósito: um relato descartado não deve
+// mascarar outro item do mesmo grupo que ainda está aberto/em andamento/resolvido.
+const PRIORIDADE_STATUS: StatusRelato[] = ["aberto", "em_andamento", "resolvido", "descartado"];
 
 /** Status mais "urgente" entre os itens do grupo — define a cor do pino. */
 export function statusDoGrupo(itens: Relato[]): StatusRelato {
   for (const status of PRIORIDADE_STATUS) {
     if (itens.some((r) => r.status === status)) return status;
   }
-  return "resolvido";
+  return "descartado";
 }

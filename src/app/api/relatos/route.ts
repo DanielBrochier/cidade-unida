@@ -3,6 +3,7 @@ import { getSupabaseAdmin, FOTOS_BUCKET } from "@/lib/supabase-admin";
 import { CATEGORIAS } from "@/lib/categorias";
 import { obterIp, verificarLimiteEnvio } from "@/lib/rate-limit";
 import { resolverCidadeDaRequisicao } from "@/lib/tenant";
+import { contemConteudoImproprio } from "@/lib/moderacao";
 
 const TAMANHO_MAXIMO_FOTO = 8 * 1024 * 1024; // 8 MB
 
@@ -76,6 +77,12 @@ export async function POST(request: Request) {
   if (foto.size > TAMANHO_MAXIMO_FOTO) {
     return NextResponse.json(
       { erro: "A foto é muito grande (máximo 8 MB)." },
+      { status: 400 }
+    );
+  }
+  if (contemConteudoImproprio(nome) || contemConteudoImproprio(descricao)) {
+    return NextResponse.json(
+      { erro: "O texto do relato contém conteúdo impróprio. Ajuste e tente novamente." },
       { status: 400 }
     );
   }

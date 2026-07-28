@@ -5,12 +5,13 @@ import { atualizarStatusGrupo } from "@/app/painel/actions";
 import { labelCategoria, STATUS_LABEL, type StatusRelato } from "@/lib/categorias";
 import { statusDoGrupo, type GrupoRelatos } from "@/lib/agrupar-relatos";
 
-const STATUS_OPCOES: StatusRelato[] = ["aberto", "em_andamento", "resolvido"];
+const STATUS_OPCOES: StatusRelato[] = ["aberto", "em_andamento", "resolvido", "descartado"];
 
 const CHIP_CLASSE: Record<StatusRelato, string> = {
   aberto: "bg-accent-soft text-accent",
   em_andamento: "bg-amber-soft text-amber",
   resolvido: "bg-moss-soft text-moss",
+  descartado: "bg-line text-ink-soft",
 };
 
 function LinhaGrupo({

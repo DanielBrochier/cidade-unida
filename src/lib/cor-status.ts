@@ -7,4 +7,5 @@ export const COR_STATUS: Record<StatusRelato, string> = {
   aberto: "#b8451f",
   em_andamento: "#a47418",
   resolvido: "#5c6b45",
+  descartado: "#8a8a86",
 };

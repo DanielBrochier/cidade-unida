@@ -8,7 +8,13 @@ import MapaRelatosClient from "@/components/painel/MapaRelatosClient";
 import ListaRelatos from "@/components/painel/ListaRelatos";
 import RelatoModal from "@/components/painel/RelatoModal";
 
-const STATUS_FILTRO: (StatusRelato | "todos")[] = ["todos", "aberto", "em_andamento", "resolvido"];
+const STATUS_FILTRO: (StatusRelato | "todos")[] = [
+  "todos",
+  "aberto",
+  "em_andamento",
+  "resolvido",
+  "descartado",
+];
 const STATUS_VALIDOS = new Set<string>(STATUS_FILTRO);
 const CATEGORIAS_VALIDAS = new Set<string>(CATEGORIAS.map((c) => c.id));
 
@@ -65,7 +71,9 @@ export default function PainelConteudo({
     () =>
       relatos.filter(
         (r) =>
-          (filtroStatus === "todos" || r.status === filtroStatus) &&
+          // "Todos os status" esconde descartados de propósito — só aparecem
+          // quando alguém filtra por "Descartado" explicitamente.
+          (filtroStatus === "todos" ? r.status !== "descartado" : r.status === filtroStatus) &&
           (filtroCategoria === "todas" || r.categoria === filtroCategoria)
       ),
     [relatos, filtroStatus, filtroCategoria]

@@ -4,6 +4,7 @@ const CLASSE_COR: Record<StatusRelato, string> = {
   aberto: "bg-accent-soft text-accent",
   em_andamento: "bg-amber-soft text-amber",
   resolvido: "bg-moss-soft text-moss",
+  descartado: "bg-line text-ink-soft",
 };
 
 export default function StatusBadge({
