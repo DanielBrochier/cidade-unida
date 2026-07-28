@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { distanciaKm } from "@/lib/distancia";
 
 export type Cidade = {
   id: string;
@@ -79,4 +80,36 @@ export async function resolverCidadeDaRequisicao(request: Request): Promise<Cida
   const slug = extrairSlugDoHost(host) ?? CIDADE_PADRAO_SLUG;
   if (!slug) return null;
   return buscarCidadePorSlug(slug);
+}
+
+// Geolocalização por IP é aproximada (às vezes acerta só a região, não a
+// cidade exata) — não sugerir uma cidade cadastrada longe demais do visitante.
+const RAIO_SUGESTAO_KM = 150;
+
+/** Lê a localização aproximada do visitante pelos headers de geo-IP da Vercel. */
+export async function obterGeoAtual(): Promise<{ lat: number; lng: number } | null> {
+  const headersList = await headers();
+  const lat = Number(headersList.get("x-vercel-ip-latitude"));
+  const lng = Number(headersList.get("x-vercel-ip-longitude"));
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  return { lat, lng };
+}
+
+/** Cidade cadastrada mais próxima de uma coordenada, se houver alguma por perto. */
+export async function buscarCidadeMaisProxima(lat: number, lng: number): Promise<Cidade | null> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase.from("cidades").select("*");
+  if (error) throw new Error(error.message);
+  if (!data || data.length === 0) return null;
+
+  let maisProxima: Cidade | null = null;
+  let menorDistancia = Infinity;
+  for (const cidade of data as Cidade[]) {
+    const distancia = distanciaKm(lat, lng, cidade.latitude, cidade.longitude);
+    if (distancia < menorDistancia) {
+      menorDistancia = distancia;
+      maisProxima = cidade;
+    }
+  }
+  return menorDistancia <= RAIO_SUGESTAO_KM ? maisProxima : null;
 }

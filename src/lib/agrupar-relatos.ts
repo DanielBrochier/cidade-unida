@@ -1,4 +1,5 @@
 import type { Relato, StatusRelato } from "@/lib/categorias";
+import { distanciaKm } from "@/lib/distancia";
 
 export type GrupoRelatos = {
   lat: number;
@@ -9,17 +10,6 @@ export type GrupoRelatos = {
 // Raio de distância real (não arredondamento de grade) pra juntar relatos do
 // "mesmo buraco" sem misturar problemas diferentes na mesma rua.
 const RAIO_AGRUPAMENTO_METROS = 15;
-const RAIO_TERRA_METROS = 6371000;
-
-function distanciaMetros(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const paraRad = (graus: number) => (graus * Math.PI) / 180;
-  const dLat = paraRad(lat2 - lat1);
-  const dLng = paraRad(lng2 - lng1);
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(paraRad(lat1)) * Math.cos(paraRad(lat2)) * Math.sin(dLng / 2) ** 2;
-  return 2 * RAIO_TERRA_METROS * Math.asin(Math.sqrt(a));
-}
 
 /**
  * Agrupa relatos da MESMA categoria que estão a até RAIO_AGRUPAMENTO_METROS um
@@ -41,7 +31,7 @@ export function agruparRelatos(relatos: Relato[]): GrupoRelatos[] {
       const candidato = restantes[i];
       const mesmaCategoria = candidato.categoria === base.categoria;
       const perto =
-        distanciaMetros(base.latitude, base.longitude, candidato.latitude, candidato.longitude) <=
+        distanciaKm(base.latitude, base.longitude, candidato.latitude, candidato.longitude) * 1000 <=
         RAIO_AGRUPAMENTO_METROS;
       if (mesmaCategoria && perto) {
         grupo.push(candidato);

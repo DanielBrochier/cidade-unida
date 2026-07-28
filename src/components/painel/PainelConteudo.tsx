@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { CATEGORIAS, STATUS_LABEL, type CategoriaId, type Relato, type StatusRelato } from "@/lib/categorias";
 import { agruparRelatos, type GrupoRelatos } from "@/lib/agrupar-relatos";
 import MapaRelatosClient from "@/components/painel/MapaRelatosClient";
@@ -8,6 +9,8 @@ import ListaRelatos from "@/components/painel/ListaRelatos";
 import RelatoModal from "@/components/painel/RelatoModal";
 
 const STATUS_FILTRO: (StatusRelato | "todos")[] = ["todos", "aberto", "em_andamento", "resolvido"];
+const STATUS_VALIDOS = new Set<string>(STATUS_FILTRO);
+const CATEGORIAS_VALIDAS = new Set<string>(CATEGORIAS.map((c) => c.id));
 
 function BotaoFiltro({
   ativo,
@@ -22,7 +25,7 @@ function BotaoFiltro({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+      className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
         ativo ? "border-accent bg-accent-soft text-accent" : "border-line text-ink-soft hover:border-ink-soft"
       }`}
     >
@@ -38,9 +41,25 @@ export default function PainelConteudo({
   relatos: Relato[];
   centroCidade: { lat: number; lng: number };
 }) {
-  const [filtroStatus, setFiltroStatus] = useState<StatusRelato | "todos">("todos");
-  const [filtroCategoria, setFiltroCategoria] = useState<CategoriaId | "todas">("todas");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [grupoSelecionado, setGrupoSelecionado] = useState<GrupoRelatos | null>(null);
+
+  const statusNaUrl = searchParams.get("status");
+  const categoriaNaUrl = searchParams.get("categoria");
+  const filtroStatus: StatusRelato | "todos" =
+    statusNaUrl && STATUS_VALIDOS.has(statusNaUrl) ? (statusNaUrl as StatusRelato) : "todos";
+  const filtroCategoria: CategoriaId | "todas" =
+    categoriaNaUrl && CATEGORIAS_VALIDAS.has(categoriaNaUrl) ? (categoriaNaUrl as CategoriaId) : "todas";
+
+  function atualizarFiltro(chave: "status" | "categoria", valor: string, valorPadrao: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (valor === valorPadrao) params.delete(chave);
+    else params.set(chave, valor);
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }
 
   const relatosFiltrados = useMemo(
     () =>
@@ -61,7 +80,11 @@ export default function PainelConteudo({
           <span className="font-mono text-[10px] uppercase tracking-widest text-ink-soft">Status</span>
           <div className="flex flex-wrap gap-2">
             {STATUS_FILTRO.map((s) => (
-              <BotaoFiltro key={s} ativo={filtroStatus === s} onClick={() => setFiltroStatus(s)}>
+              <BotaoFiltro
+                key={s}
+                ativo={filtroStatus === s}
+                onClick={() => atualizarFiltro("status", s, "todos")}
+              >
                 {s === "todos" ? "Todos os status" : STATUS_LABEL[s]}
               </BotaoFiltro>
             ))}
@@ -71,11 +94,18 @@ export default function PainelConteudo({
         <div className="flex flex-col gap-1.5 border-t border-line pt-3">
           <span className="font-mono text-[10px] uppercase tracking-widest text-ink-soft">Categoria</span>
           <div className="flex flex-wrap gap-2">
-            <BotaoFiltro ativo={filtroCategoria === "todas"} onClick={() => setFiltroCategoria("todas")}>
+            <BotaoFiltro
+              ativo={filtroCategoria === "todas"}
+              onClick={() => atualizarFiltro("categoria", "todas", "todas")}
+            >
               Todas as categorias
             </BotaoFiltro>
             {CATEGORIAS.map((c) => (
-              <BotaoFiltro key={c.id} ativo={filtroCategoria === c.id} onClick={() => setFiltroCategoria(c.id)}>
+              <BotaoFiltro
+                key={c.id}
+                ativo={filtroCategoria === c.id}
+                onClick={() => atualizarFiltro("categoria", c.id, "todas")}
+              >
                 {c.label}
               </BotaoFiltro>
             ))}

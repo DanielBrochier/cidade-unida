@@ -34,7 +34,13 @@ function LinhaGrupo({
       >
         <div className="relative flex-none">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={principal.foto_url} alt="" className="h-12 w-12 rounded-md object-cover" />
+          <img
+            src={principal.foto_url}
+            alt={labelCategoria(principal.categoria)}
+            width={48}
+            height={48}
+            className="h-12 w-12 rounded-md object-cover"
+          />
           {grupo.itens.length > 1 && (
             <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-accent font-mono text-[10px] font-bold text-accent-ink">
               {grupo.itens.length}
@@ -49,7 +55,7 @@ function LinhaGrupo({
               : `${principal.nome_morador ? `${principal.nome_morador} · ` : ""}${new Date(principal.created_at).toLocaleDateString("pt-BR")}`}
           </p>
           {grupo.itens.length === 1 && principal.descricao && (
-            <p className="mt-0.5 text-xs text-ink-soft">{principal.descricao}</p>
+            <p className="mt-0.5 line-clamp-2 text-xs text-ink-soft">{principal.descricao}</p>
           )}
         </div>
       </button>
@@ -64,7 +70,7 @@ function LinhaGrupo({
               atualizarStatusGrupo(ids, novoStatus);
             });
           }}
-          className="appearance-none rounded-full bg-transparent py-1 pl-3 pr-6 font-mono text-xs outline-none disabled:opacity-50"
+          className="appearance-none rounded-full bg-transparent py-1 pl-3 pr-6 font-mono text-xs text-inherit outline-none disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           {STATUS_OPCOES.map((s) => (
             <option key={s} value={s} className="bg-paper text-ink">

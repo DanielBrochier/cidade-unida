@@ -159,10 +159,17 @@ export default function FormularioRelato({ cidade }: { cidade: CidadePublica }) 
           <button
             type="button"
             onClick={() => inputFotoRef.current?.click()}
-            className="block w-full overflow-hidden rounded-md border border-line"
+            aria-label="Trocar foto"
+            className="block w-full overflow-hidden rounded-md border border-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={fotoPreview} alt="Prévia da foto do problema" className="h-44 w-full object-cover" />
+            <img
+              src={fotoPreview}
+              alt="Prévia da foto do problema"
+              width={640}
+              height={176}
+              className="h-44 w-full object-cover"
+            />
           </button>
         ) : (
           <button
@@ -201,7 +208,7 @@ export default function FormularioRelato({ cidade }: { cidade: CidadePublica }) 
         <span className="mb-2 block text-xs font-medium uppercase tracking-wide text-ink-soft">
           Localização
         </span>
-        <div className="mb-2 font-mono text-xs text-ink-soft">
+        <div className="mb-2 font-mono text-xs text-ink-soft" aria-live="polite">
           {statusLocalizacao === "buscando" && <span>◎ localizando…</span>}
           {statusLocalizacao === "ok" && (
             <span className="text-moss">◎ localização capturada — arraste o mapa se precisar ajustar</span>
@@ -234,11 +241,13 @@ export default function FormularioRelato({ cidade }: { cidade: CidadePublica }) 
           Seu nome <em className="font-normal normal-case text-ink-soft/80">(opcional)</em>
         </span>
         <input
+          name="nome"
+          autoComplete="name"
           value={nome}
           onChange={(e) => setNome(e.target.value)}
           placeholder="Se quiser, diga quem está relatando"
           maxLength={120}
-          className="rounded-md border border-line bg-paper px-3 py-2 text-ink outline-none focus:border-accent"
+          className="rounded-md border border-line bg-paper px-3 py-2 text-ink outline-none focus:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         />
       </label>
 
@@ -247,17 +256,20 @@ export default function FormularioRelato({ cidade }: { cidade: CidadePublica }) 
           Descrição <em className="font-normal normal-case text-ink-soft/80">(opcional)</em>
         </span>
         <textarea
+          name="descricao"
           value={descricao}
           onChange={(e) => setDescricao(e.target.value)}
           placeholder="Algum detalhe que ajude a localizar ou entender o problema"
           maxLength={1000}
           rows={3}
-          className="resize-none rounded-md border border-line bg-paper px-3 py-2 text-ink outline-none focus:border-accent"
+          className="resize-none rounded-md border border-line bg-paper px-3 py-2 text-ink outline-none focus:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         />
       </label>
 
       {mensagemErro && (
-        <p className="rounded-md bg-accent-soft px-3 py-2 text-sm text-accent">{mensagemErro}</p>
+        <p className="rounded-md bg-accent-soft px-3 py-2 text-sm text-accent" aria-live="polite">
+          {mensagemErro}
+        </p>
       )}
 
       <p className="text-xs text-ink-soft">
@@ -268,7 +280,7 @@ export default function FormularioRelato({ cidade }: { cidade: CidadePublica }) 
       <button
         type="submit"
         disabled={!podeEnviar}
-        className="rounded-md bg-accent py-2.5 text-sm font-semibold text-accent-ink transition-opacity disabled:opacity-40"
+        className="rounded-md bg-accent py-2.5 text-sm font-semibold text-accent-ink transition-opacity hover:opacity-90 disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         {statusEnvio === "enviando" ? "Enviando…" : "Enviar relato"}
       </button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { atualizarStatusGrupo } from "@/app/painel/actions";
 import { labelCategoria, STATUS_LABEL, type StatusRelato } from "@/lib/categorias";
 import { statusDoGrupo, type GrupoRelatos } from "@/lib/agrupar-relatos";
@@ -24,6 +24,15 @@ export default function RelatoModal({
   aoFechar: () => void;
 }) {
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (!grupo) return;
+    function aoTeclar(evento: KeyboardEvent) {
+      if (evento.key === "Escape") aoFechar();
+    }
+    document.addEventListener("keydown", aoTeclar);
+    return () => document.removeEventListener("keydown", aoTeclar);
+  }, [grupo, aoFechar]);
 
   if (!grupo) return null;
 
@@ -76,7 +85,7 @@ export default function RelatoModal({
               type="button"
               disabled={isPending}
               onClick={() => startTransition(() => atualizarStatusGrupo(ids, status))}
-              className={`rounded-full border-2 px-4 py-1.5 text-sm font-bold uppercase tracking-wide transition-opacity disabled:opacity-50 ${
+              className={`rounded-full border-2 px-4 py-1.5 text-sm font-bold uppercase tracking-wide transition-opacity hover:opacity-80 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
                 statusAtual === status ? CLASSE_BOTAO[status] : "border-line text-ink-soft"
               }`}
             >
@@ -85,7 +94,7 @@ export default function RelatoModal({
           ))}
         </div>
 
-        <div className="flex flex-col gap-4 overflow-y-auto p-5">
+        <div className="flex flex-col gap-4 overflow-y-auto overscroll-contain p-5">
           {grupo.itens.map((relato) => (
             <div
               key={relato.id}
@@ -106,6 +115,8 @@ export default function RelatoModal({
               <img
                 src={relato.foto_url}
                 alt={labelCategoria(relato.categoria)}
+                width={640}
+                height={224}
                 className="h-56 w-full rounded-md object-cover"
               />
               {relato.descricao && <p className="text-sm text-ink-soft">{relato.descricao}</p>}

@@ -1,14 +1,24 @@
+import { redirect } from "next/navigation";
 import FormularioRelato from "@/components/FormularioRelato";
-import { resolverCidadeAtual, paraCidadePublica } from "@/lib/tenant";
+import { resolverCidadeAtual, paraCidadePublica, obterGeoAtual, buscarCidadeMaisProxima } from "@/lib/tenant";
 
 export default async function Home() {
   const cidade = await resolverCidadeAtual();
 
   if (!cidade) {
+    const baseDomain = process.env.BASE_DOMAIN;
+    if (baseDomain) {
+      const geo = await obterGeoAtual();
+      const cidadeProxima = geo ? await buscarCidadeMaisProxima(geo.lat, geo.lng) : null;
+      if (cidadeProxima) {
+        redirect(`https://${cidadeProxima.slug}.${baseDomain}`);
+      }
+    }
+
     return (
       <div className="flex flex-1 items-center justify-center px-4 py-10 text-center text-sm text-ink-soft">
-        Não foi possível identificar a cidade pelo endereço acessado. Acesse pelo
-        subdomínio da sua cidade (ex: brochier.cidadeunida.com).
+        Ainda não temos o Cidade Unida cadastrado pra sua região. Se você é da
+        prefeitura e quer trazer pra sua cidade, entre em contato.
       </div>
     );
   }

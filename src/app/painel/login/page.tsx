@@ -28,10 +28,10 @@ export default async function PainelLoginPage({
             <input
               type="password"
               name="senha"
-              autoFocus
+              autoComplete="current-password"
               required
               disabled={!cidade}
-              className="rounded-md border border-line bg-paper px-3 py-2 text-ink outline-none focus:border-accent disabled:opacity-50"
+              className="rounded-md border border-line bg-paper px-3 py-2 text-ink outline-none focus:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50"
             />
           </label>
 
@@ -54,7 +54,7 @@ export default async function PainelLoginPage({
           <button
             type="submit"
             disabled={!cidade}
-            className="mt-1 rounded-md bg-accent py-2.5 text-sm font-semibold text-accent-ink disabled:opacity-50"
+            className="mt-1 rounded-md bg-accent py-2.5 text-sm font-semibold text-accent-ink hover:opacity-90 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
             Entrar
           </button>
