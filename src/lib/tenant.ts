@@ -56,6 +56,11 @@ export async function buscarCidadePorSlug(slug: string): Promise<Cidade | null> 
   return data;
 }
 
+// Fallback pra quando ainda não existe domínio próprio (ex: testando direto
+// em cidade-unida.vercel.app, que não permite subdomínio embaixo dele).
+// Sem isso definido, host sem subdomínio reconhecido simplesmente não acha cidade.
+const CIDADE_PADRAO_SLUG = process.env.CIDADE_PADRAO_SLUG || null;
+
 /** Uso em Server Components e Server Actions (lê o Host via next/headers). */
 export async function resolverCidadeAtual(): Promise<Cidade | null> {
   const headersList = await headers();
@@ -63,7 +68,7 @@ export async function resolverCidadeAtual(): Promise<Cidade | null> {
   // pode virar um valor interno (ex: "localhost:3000") em certas passagens
   // internas do Next.js, como o redirect disparado por uma Server Action.
   const host = headersList.get("x-forwarded-host") ?? headersList.get("host");
-  const slug = extrairSlugDoHost(host);
+  const slug = extrairSlugDoHost(host) ?? CIDADE_PADRAO_SLUG;
   if (!slug) return null;
   return buscarCidadePorSlug(slug);
 }
@@ -71,7 +76,7 @@ export async function resolverCidadeAtual(): Promise<Cidade | null> {
 /** Uso em Route Handlers (a requisição já vem como parâmetro). */
 export async function resolverCidadeDaRequisicao(request: Request): Promise<Cidade | null> {
   const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
-  const slug = extrairSlugDoHost(host);
+  const slug = extrairSlugDoHost(host) ?? CIDADE_PADRAO_SLUG;
   if (!slug) return null;
   return buscarCidadePorSlug(slug);
 }
