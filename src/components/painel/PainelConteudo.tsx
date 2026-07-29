@@ -7,6 +7,7 @@ import { agruparRelatos, type GrupoRelatos } from "@/lib/agrupar-relatos";
 import MapaRelatosClient from "@/components/painel/MapaRelatosClient";
 import ListaRelatos from "@/components/painel/ListaRelatos";
 import RelatoModal from "@/components/painel/RelatoModal";
+import BotaoFiltro from "@/components/BotaoFiltro";
 
 const STATUS_FILTRO: (StatusRelato | "todos")[] = [
   "todos",
@@ -18,28 +19,6 @@ const STATUS_FILTRO: (StatusRelato | "todos")[] = [
 const STATUS_VALIDOS = new Set<string>(STATUS_FILTRO);
 const CATEGORIAS_VALIDAS = new Set<string>(CATEGORIAS.map((c) => c.id));
 
-function BotaoFiltro({
-  ativo,
-  onClick,
-  children,
-}: {
-  ativo: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
-        ativo ? "border-accent bg-accent-soft text-accent" : "border-line text-ink-soft hover:border-ink-soft"
-      }`}
-    >
-      {children}
-    </button>
-  );
-}
-
 export default function PainelConteudo({
   relatos,
   centroCidade,
@@ -50,7 +29,7 @@ export default function PainelConteudo({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [grupoSelecionado, setGrupoSelecionado] = useState<GrupoRelatos | null>(null);
+  const [grupoSelecionado, setGrupoSelecionado] = useState<GrupoRelatos<Relato> | null>(null);
 
   const statusNaUrl = searchParams.get("status");
   const categoriaNaUrl = searchParams.get("categoria");

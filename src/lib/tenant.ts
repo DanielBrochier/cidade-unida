@@ -11,11 +11,15 @@ export type Cidade = {
   longitude: number;
   senha_hash: string;
   senha_salt: string;
+  painel_publico: boolean;
   created_at: string;
 };
 
 /** Só os campos seguros pra mandar pra um Client Component (nunca o hash/salt da senha). */
-export type CidadePublica = Pick<Cidade, "id" | "slug" | "nome" | "uf" | "latitude" | "longitude">;
+export type CidadePublica = Pick<
+  Cidade,
+  "id" | "slug" | "nome" | "uf" | "latitude" | "longitude" | "painel_publico"
+>;
 
 export function paraCidadePublica(cidade: Cidade): CidadePublica {
   return {
@@ -25,6 +29,7 @@ export function paraCidadePublica(cidade: Cidade): CidadePublica {
     uf: cidade.uf,
     latitude: cidade.latitude,
     longitude: cidade.longitude,
+    painel_publico: cidade.painel_publico,
   };
 }
 

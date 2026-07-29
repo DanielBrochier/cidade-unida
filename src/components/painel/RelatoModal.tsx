@@ -2,7 +2,7 @@
 
 import { useEffect, useTransition } from "react";
 import { atualizarStatusGrupo } from "@/app/painel/actions";
-import { labelCategoria, STATUS_LABEL, type StatusRelato } from "@/lib/categorias";
+import { labelCategoria, STATUS_LABEL, type Relato, type StatusRelato } from "@/lib/categorias";
 import { statusDoGrupo, type GrupoRelatos } from "@/lib/agrupar-relatos";
 import { COR_STATUS } from "@/lib/cor-status";
 import StatusBadge from "@/components/painel/StatusBadge";
@@ -21,7 +21,7 @@ export default function RelatoModal({
   grupo,
   aoFechar,
 }: {
-  grupo: GrupoRelatos | null;
+  grupo: GrupoRelatos<Relato> | null;
   aoFechar: () => void;
 }) {
   const [isPending, startTransition] = useTransition();

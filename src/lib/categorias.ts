@@ -50,3 +50,12 @@ export type Relato = {
   longitude: number;
   status: StatusRelato;
 };
+
+/**
+ * Versão do relato pro mapa público — sem nome do morador nem descrição
+ * livre, de propósito (ver decisão de privacidade em src/app/mapa/page.tsx).
+ */
+export type RelatoPublico = Pick<
+  Relato,
+  "id" | "categoria" | "foto_url" | "latitude" | "longitude" | "status" | "created_at"
+>;

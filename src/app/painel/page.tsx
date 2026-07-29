@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import type { Relato } from "@/lib/categorias";
 import PainelConteudo from "@/components/painel/PainelConteudo";
-import { sairDoPainel } from "@/app/painel/actions";
+import { sairDoPainel, alternarPainelPublico } from "@/app/painel/actions";
 import { resolverCidadeAtual } from "@/lib/tenant";
 import { PAINEL_COOKIE, sessaoValidaParaCidade } from "@/lib/painel-auth";
 
@@ -51,14 +51,29 @@ export default async function PainelPage() {
           <h1 className="font-serif text-2xl font-bold">Cidade Unida</h1>
           <p className="text-sm font-medium text-ink-soft">Painel de relatos</p>
         </div>
-        <form action={sairDoPainel}>
-          <button
-            type="submit"
-            className="rounded-md border border-line px-3 py-1.5 text-sm hover:bg-paper-raised"
-          >
-            Sair
-          </button>
-        </form>
+        <div className="flex items-center gap-2">
+          <form action={alternarPainelPublico.bind(null, !cidade.painel_publico)}>
+            <button
+              type="submit"
+              className="rounded-md border border-line px-3 py-1.5 text-sm hover:bg-paper-raised"
+              title={
+                cidade.painel_publico
+                  ? "Qualquer pessoa com o link consegue ver o mapa público"
+                  : "O mapa público está desligado — só a equipe vê os relatos"
+              }
+            >
+              Mapa público: {cidade.painel_publico ? "ativado" : "desativado"}
+            </button>
+          </form>
+          <form action={sairDoPainel}>
+            <button
+              type="submit"
+              className="rounded-md border border-line px-3 py-1.5 text-sm hover:bg-paper-raised"
+            >
+              Sair
+            </button>
+          </form>
+        </div>
       </header>
 
       {erroCarregamento && (

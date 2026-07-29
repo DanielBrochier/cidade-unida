@@ -79,3 +79,19 @@ export async function atualizarStatusGrupo(ids: string[], status: StatusRelato) 
 
   revalidatePath("/painel");
 }
+
+/** Liga/desliga o mapa público (/mapa) desta cidade. */
+export async function alternarPainelPublico(ativar: boolean) {
+  const cidade = await exigirSessaoValida();
+
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase
+    .from("cidades")
+    .update({ painel_publico: ativar })
+    .eq("id", cidade.id);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/painel");
+  revalidatePath("/mapa");
+  revalidatePath("/");
+}

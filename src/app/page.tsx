@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import FormularioRelato from "@/components/FormularioRelato";
 import { resolverCidadeAtual, paraCidadePublica, obterGeoAtual, buscarCidadeMaisProxima } from "@/lib/tenant";
 
@@ -37,6 +38,14 @@ export default async function Home() {
           </p>
         </header>
         <FormularioRelato cidade={paraCidadePublica(cidade)} />
+
+        {cidade.painel_publico && (
+          <p className="mt-4 text-center text-sm">
+            <Link href="/mapa" className="text-accent underline">
+              Ver o mapa de relatos da cidade
+            </Link>
+          </p>
+        )}
       </main>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { atualizarStatusGrupo } from "@/app/painel/actions";
-import { labelCategoria, STATUS_LABEL, type StatusRelato } from "@/lib/categorias";
+import { labelCategoria, STATUS_LABEL, type Relato, type StatusRelato } from "@/lib/categorias";
 import { statusDoGrupo, type GrupoRelatos } from "@/lib/agrupar-relatos";
 
 const STATUS_OPCOES: StatusRelato[] = ["aberto", "em_andamento", "resolvido", "descartado"];
@@ -18,8 +18,8 @@ function LinhaGrupo({
   grupo,
   aoSelecionarGrupo,
 }: {
-  grupo: GrupoRelatos;
-  aoSelecionarGrupo: (grupo: GrupoRelatos) => void;
+  grupo: GrupoRelatos<Relato>;
+  aoSelecionarGrupo: (grupo: GrupoRelatos<Relato>) => void;
 }) {
   const [isPending, startTransition] = useTransition();
   const status = statusDoGrupo(grupo.itens);
@@ -89,8 +89,8 @@ export default function ListaRelatos({
   grupos,
   aoSelecionarGrupo,
 }: {
-  grupos: GrupoRelatos[];
-  aoSelecionarGrupo: (grupo: GrupoRelatos) => void;
+  grupos: GrupoRelatos<Relato>[];
+  aoSelecionarGrupo: (grupo: GrupoRelatos<Relato>) => void;
 }) {
   if (grupos.length === 0) {
     return <p className="text-sm text-ink-soft">Nenhum relato ainda.</p>;

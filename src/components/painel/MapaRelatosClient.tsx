@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import type { Relato } from "@/lib/categorias";
 import type { GrupoRelatos } from "@/lib/agrupar-relatos";
 
 const MapaRelatos = dynamic(() => import("./MapaRelatos"), {
@@ -17,9 +18,9 @@ export default function MapaRelatosClient({
   centroCidade,
   aoSelecionarGrupo,
 }: {
-  grupos: GrupoRelatos[];
+  grupos: GrupoRelatos<Relato>[];
   centroCidade: { lat: number; lng: number };
-  aoSelecionarGrupo: (grupo: GrupoRelatos) => void;
+  aoSelecionarGrupo: (grupo: GrupoRelatos<Relato>) => void;
 }) {
   return <MapaRelatos grupos={grupos} centroCidade={centroCidade} aoSelecionarGrupo={aoSelecionarGrupo} />;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import type { Relato } from "@/lib/categorias";
 import { statusDoGrupo, type GrupoRelatos } from "@/lib/agrupar-relatos";
 import { criarIconePino } from "@/lib/pino-mapa";
 import { COR_STATUS } from "@/lib/cor-status";
@@ -10,9 +11,9 @@ export default function MapaRelatos({
   centroCidade,
   aoSelecionarGrupo,
 }: {
-  grupos: GrupoRelatos[];
+  grupos: GrupoRelatos<Relato>[];
   centroCidade: { lat: number; lng: number };
-  aoSelecionarGrupo: (grupo: GrupoRelatos) => void;
+  aoSelecionarGrupo: (grupo: GrupoRelatos<Relato>) => void;
 }) {
   const centro: [number, number] =
     grupos.length > 0

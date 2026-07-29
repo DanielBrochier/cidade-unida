@@ -1,10 +1,17 @@
-import type { Relato, StatusRelato } from "@/lib/categorias";
+import type { StatusRelato } from "@/lib/categorias";
 import { distanciaKm } from "@/lib/distancia";
 
-export type GrupoRelatos = {
+type ItemAgrupavel = {
+  categoria: string;
+  latitude: number;
+  longitude: number;
+  status: StatusRelato;
+};
+
+export type GrupoRelatos<T extends ItemAgrupavel> = {
   lat: number;
   lng: number;
-  itens: Relato[];
+  itens: T[];
 };
 
 // Raio de distância real (não arredondamento de grade) pra juntar relatos do
@@ -18,10 +25,14 @@ const RAIO_AGRUPAMENTO_METROS = 15;
  * Usa distância real (Haversine), não arredondamento de coordenada — assim
  * dois relatos bem próximos não escapam do agrupamento por caírem em lados
  * opostos de uma célula de grade.
+ *
+ * Genérico: funciona tanto com o `Relato` completo (painel do admin) quanto
+ * com `RelatoPublico` (mapa público, sem nome/descrição) — ambos têm
+ * categoria/latitude/longitude/status, só isso importa pro agrupamento.
  */
-export function agruparRelatos(relatos: Relato[]): GrupoRelatos[] {
+export function agruparRelatos<T extends ItemAgrupavel>(relatos: T[]): GrupoRelatos<T>[] {
   const restantes = [...relatos];
-  const grupos: Relato[][] = [];
+  const grupos: T[][] = [];
 
   while (restantes.length > 0) {
     const base = restantes.shift()!;
@@ -54,7 +65,7 @@ export function agruparRelatos(relatos: Relato[]): GrupoRelatos[] {
 const PRIORIDADE_STATUS: StatusRelato[] = ["aberto", "em_andamento", "resolvido", "descartado"];
 
 /** Status mais "urgente" entre os itens do grupo — define a cor do pino. */
-export function statusDoGrupo(itens: Relato[]): StatusRelato {
+export function statusDoGrupo<T extends { status: StatusRelato }>(itens: T[]): StatusRelato {
   for (const status of PRIORIDADE_STATUS) {
     if (itens.some((r) => r.status === status)) return status;
   }

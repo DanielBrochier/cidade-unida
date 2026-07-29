@@ -17,6 +17,7 @@ create table if not exists public.cidades (
   longitude double precision not null,
   senha_hash text not null,
   senha_salt text not null,
+  painel_publico boolean not null default false,
   created_at timestamptz not null default now()
 );
 alter table public.cidades enable row level security;
