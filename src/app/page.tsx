@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import FormularioRelato from "@/components/FormularioRelato";
-import { resolverCidadeAtual, paraCidadePublica, obterGeoAtual, buscarCidadeMaisProxima } from "@/lib/tenant";
+import PaginaFormulario from "@/components/PaginaFormulario";
+import PaginaMapaPublico from "@/components/publico/PaginaMapaPublico";
+import { resolverCidadeAtual, obterGeoAtual, buscarCidadeMaisProxima } from "@/lib/tenant";
+
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const cidade = await resolverCidadeAtual();
@@ -24,29 +26,9 @@ export default async function Home() {
     );
   }
 
-  return (
-    <div className="flex flex-1 justify-center px-4 py-10">
-      <main className="w-full max-w-md">
-        <header className="mb-6">
-          <p className="font-mono text-xs uppercase tracking-widest text-accent">
-            {cidade.nome}, {cidade.uf}
-          </p>
-          <h1 className="font-serif text-3xl font-bold leading-tight">Cidade Unida</h1>
-          <p className="mt-1 text-sm text-ink-soft">
-            Buraco na rua, poste apagado, lixo acumulado? Relate abaixo — a prefeitura vê tudo
-            num mapa e prioriza o atendimento.
-          </p>
-        </header>
-        <FormularioRelato cidade={paraCidadePublica(cidade)} />
+  if (cidade.painel_publico) {
+    return <PaginaMapaPublico cidade={cidade} />;
+  }
 
-        {cidade.painel_publico && (
-          <p className="mt-4 text-center text-sm">
-            <Link href="/mapa" className="text-accent underline">
-              Ver o mapa de relatos da cidade
-            </Link>
-          </p>
-        )}
-      </main>
-    </div>
-  );
+  return <PaginaFormulario cidade={cidade} />;
 }
