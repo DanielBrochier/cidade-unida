@@ -4,6 +4,7 @@ import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import type { RelatoPublico } from "@/lib/categorias";
 import type { Cidade } from "@/lib/tenant";
 import PainelPublicoConteudo from "@/components/publico/PainelPublicoConteudo";
+import RodapeContato from "@/components/RodapeContato";
 
 export default async function PaginaMapaPublico({ cidade }: { cidade: Cidade }) {
   let relatos: RelatoPublico[] = [];
@@ -59,6 +60,8 @@ export default async function PaginaMapaPublico({ cidade }: { cidade: Cidade }) 
         relatos={relatos}
         centroCidade={{ lat: cidade.latitude, lng: cidade.longitude }}
       />
+
+      <RodapeContato />
     </div>
   );
 }

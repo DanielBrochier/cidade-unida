@@ -1,5 +1,6 @@
 import Link from "next/link";
 import FormularioRelato from "@/components/FormularioRelato";
+import RodapeContato from "@/components/RodapeContato";
 import type { Cidade } from "@/lib/tenant";
 import { paraCidadePublica } from "@/lib/tenant";
 
@@ -26,6 +27,8 @@ export default function PaginaFormulario({ cidade }: { cidade: Cidade }) {
             </Link>
           </p>
         )}
+
+        <RodapeContato />
       </main>
     </div>
   );

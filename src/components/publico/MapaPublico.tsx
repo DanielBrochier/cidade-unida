@@ -5,6 +5,7 @@ import { labelCategoria, STATUS_LABEL, type RelatoPublico } from "@/lib/categori
 import { statusDoGrupo, type GrupoRelatos } from "@/lib/agrupar-relatos";
 import { criarIconePino } from "@/lib/pino-mapa";
 import { COR_STATUS } from "@/lib/cor-status";
+import AjustarViewMapa from "@/components/AjustarViewMapa";
 
 export default function MapaPublico({
   grupos,
@@ -13,19 +14,20 @@ export default function MapaPublico({
   grupos: GrupoRelatos<RelatoPublico>[];
   centroCidade: { lat: number; lng: number };
 }) {
-  const centro: [number, number] =
-    grupos.length > 0
-      ? [
-          grupos.reduce((soma, g) => soma + g.lat, 0) / grupos.length,
-          grupos.reduce((soma, g) => soma + g.lng, 0) / grupos.length,
-        ]
-      : [centroCidade.lat, centroCidade.lng];
-
   return (
-    <MapContainer center={centro} zoom={13} scrollWheelZoom className="h-full w-full">
+    <MapContainer
+      center={[centroCidade.lat, centroCidade.lng]}
+      zoom={15}
+      scrollWheelZoom
+      className="h-full w-full"
+    >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <AjustarViewMapa
+        pontos={grupos.map((g) => ({ lat: g.lat, lng: g.lng }))}
+        centroPadrao={centroCidade}
       />
       {grupos.map((grupo) => {
         const status = statusDoGrupo(grupo.itens);
